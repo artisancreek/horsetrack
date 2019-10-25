@@ -166,7 +166,8 @@ For input consisting of the following commands:
 W 4
 4 10.25
 ````
-the program would produce the following output (including the startup output):
+the program would produce the following output (including the startup output): 
+
 Inventory:
 ````
 $1,10
