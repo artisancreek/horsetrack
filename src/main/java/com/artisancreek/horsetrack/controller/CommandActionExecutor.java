@@ -2,9 +2,9 @@ package com.artisancreek.horsetrack.controller;
 
 public class CommandActionExecutor {
 
-  public void executeCommandAction(CommandAction commandAction) {
+  public <T> T executeCommandAction(CommandAction commandAction) {
 
-    commandAction.execute();
+   return commandAction.execute();
 
   }
 

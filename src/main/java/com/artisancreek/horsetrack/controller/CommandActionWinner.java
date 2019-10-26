@@ -11,7 +11,8 @@ public class CommandActionWinner implements CommandAction {
   }
 
   @Override
-  public void execute() {
+  public Void execute() {
     accessorMode.winner(winner);
+    return null;
   }
 }

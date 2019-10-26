@@ -9,7 +9,8 @@ public class CommandActionRestock implements CommandAction {
   }
 
   @Override
-  public void execute() {
+  public Void execute() {
     accessorMode.restock();
+    return null;
   }
 }

@@ -43,10 +43,10 @@ public class ConfigService {
 
   public void setWinner() {
 
-    CommandAction commandAction = new CommandActionWinner(new KioskMode(), 1);
-
-    CommandActionExecutor commandActionExecutor = new CommandActionExecutor();
-    commandActionExecutor.executeCommandAction(commandAction);
+//    CommandAction commandAction = new CommandActionWinner(new KioskMode(), 1);
+//
+//    CommandActionExecutor commandActionExecutor = new CommandActionExecutor();
+//    commandActionExecutor.executeCommandAction(commandAction);
 
   }
 
@@ -54,7 +54,7 @@ public class ConfigService {
 
     loadHorses();
     loadInventory();
-    setWinner();
+//    setWinner();
 
   }
 

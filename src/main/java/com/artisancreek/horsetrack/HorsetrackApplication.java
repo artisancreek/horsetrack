@@ -1,17 +1,23 @@
 package com.artisancreek.horsetrack;
 
-import com.artisancreek.horsetrack.controller.*;
+import com.artisancreek.horsetrack.controller.KioskMode;
 import com.artisancreek.horsetrack.repository.HorseRepository;
 import com.artisancreek.horsetrack.repository.InventoryRepository;
-import com.artisancreek.horsetrack.service.ConfigService;
-import com.artisancreek.horsetrack.service.HorseTrackReporter;
+import com.artisancreek.horsetrack.service.HorseService;
+import com.artisancreek.horsetrack.service.ReporterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import java.util.Scanner;
 
 @SpringBootApplication
 public class HorsetrackApplication implements CommandLineRunner {
+
+  @Autowired
+  private ConfigurableApplicationContext context;
 
   @Autowired
   HorseRepository horseRepository;
@@ -20,10 +26,13 @@ public class HorsetrackApplication implements CommandLineRunner {
   InventoryRepository inventoryRepository;
 
   @Autowired
-  ConfigService configService;
+  HorseService horseService;
 
   @Autowired
-  HorseTrackReporter horseTrackReporter;
+  ReporterService reporterService;
+
+  @Autowired
+  KioskMode kioskMode;
 
   public static void main(String[] args) {
     SpringApplication.run(HorsetrackApplication.class, args);
@@ -32,24 +41,22 @@ public class HorsetrackApplication implements CommandLineRunner {
   @Override
   public void run(String... strings) throws Exception {
 
-    configService.startup();
+    kioskMode.initialize();
 
-    horseTrackReporter.startup();
+    kioskMode.printStartupMessages();
 
-    boolean isQuit = false;
-    while (!(isQuit)) {
+    Scanner commandString = new Scanner(System.in);
+    while (!(kioskMode.quit())) {
 
       // Read from the command line
-      CommandAction commandAction = new CommandActionQuit(new KioskMode());
-
       // validate the input
+      kioskMode.execute(commandString.nextLine());
 
-      // execute the command
-      CommandActionExecutor commandActionExecutor = new CommandActionExecutor();
-      commandActionExecutor.executeCommandAction(commandAction);
-
+//      reporterService.printHorses();
+//      kioskMode.winner(3);
     }
 
+    System.exit(SpringApplication.exit(context));
 
   }
 }

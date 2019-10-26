@@ -9,7 +9,8 @@ public class CommandActionQuit implements CommandAction {
   }
 
   @Override
-  public void execute() {
-    accessorMode.quit();
+  public Boolean execute() {
+
+    return accessorMode.quit();
   }
 }

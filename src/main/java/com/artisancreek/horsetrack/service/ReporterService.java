@@ -5,14 +5,15 @@ import com.artisancreek.horsetrack.model.Inventory;
 import com.artisancreek.horsetrack.repository.HorseRepository;
 import com.artisancreek.horsetrack.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class HorseTrackReporter {
+public class ReporterService {
 
-  public HorseTrackReporter() {
+  public ReporterService() {
   }
 
   @Autowired
@@ -20,6 +21,9 @@ public class HorseTrackReporter {
 
   @Autowired
   private InventoryRepository inventoryRepository;
+
+  @Value("${currency.symbol}")
+  private String currencySymbol;
 
   public void printHorses() {
 
@@ -35,10 +39,10 @@ public class HorseTrackReporter {
 
   public void printInventory() {
 
-    List<Inventory> inventories = inventoryRepository.findAll();
+    Iterable<Inventory> inventories = inventoryRepository.findAll();
     System.out.println("Inventory:");
     inventories.forEach((inventory) -> {
-      System.out.println("$"
+      System.out.println(currencySymbol
           +inventory.getDenomination()
           +","+inventory.getBillCount());
     });
