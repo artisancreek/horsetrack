@@ -33,12 +33,13 @@ public class KioskMode implements AccessorMode {
   @Override
   public void execute(String commandLine) {
     System.out.println("Command issued: "+commandLine);
-    if ((commandService.parseCommand(commandLine).equalsIgnoreCase("invalid"))) {
-      reporterService.printInvalidCommand(commandLine);
-    } else {
-      commandFactory(commandLine);
+    if (commandLine.length() > 0) {
+      if ((commandService.parseCommand(commandLine).equalsIgnoreCase("invalid"))) {
+        reporterService.printInvalidCommand(commandLine);
+      } else {
+        commandFactory(commandLine);
+      }
     }
-
   }
 
   private void commandFactory(String commandLine) {

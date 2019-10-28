@@ -10,9 +10,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Scanner;
 
+@Profile("!test")
 @SpringBootApplication
 public class HorsetrackApplication implements CommandLineRunner {
 
@@ -52,9 +54,6 @@ public class HorsetrackApplication implements CommandLineRunner {
       // validate the input
       kioskMode.execute(commandString.nextLine());
 
-
-//      reporterService.printHorses();
-//      kioskMode.winner(3);
     }
 
     System.exit(SpringApplication.exit(context));
