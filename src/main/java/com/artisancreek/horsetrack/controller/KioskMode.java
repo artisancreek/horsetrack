@@ -27,6 +27,9 @@ public class KioskMode implements AccessorMode {
   @Autowired
   ReporterService reporterService;
 
+  @Autowired
+  WagerService wagerService;
+
   @Override
   public void execute(String commandLine) {
     System.out.println("Command issued: "+commandLine);
@@ -60,28 +63,51 @@ public class KioskMode implements AccessorMode {
       default:
         // Do nothing
     }
-
   }
 
   @Override
   public boolean quit() {
-    System.out.println("quit");
     return quit;
   }
 
   @Override
   public void restock() {
-    System.out.println("restock");
+    inventoryService.restock();
+    reporterService.printInventory();
   }
 
   @Override
   public void wager(int horseNumber, int wagerAmount) {
-    System.out.println("wager: "+ horseNumber + "," + wagerAmount);
+    if (horseService.isValidHorseNumber(horseNumber)) {
+      int amountWon = wagerService.calculateAmountWon(
+                        wagerAmount,
+                        horseService.getHorseOdds(horseNumber));
+      if (inventoryService.sufficientFunds(amountWon)) {
+        if (horseService.isHorseWinner(horseNumber)) {
+          reporterService.printPayout(horseService.getHorseName(horseNumber), amountWon);
+          reporterService.printDispense(wagerService.dispenseWinnings(amountWon));
+        } else {
+          reporterService.printNoPayout(horseService.getHorseName(horseNumber));
+        }
+        reporterService.printInventory();
+        reporterService.printHorses();
+      } else {
+        reporterService.printInsufficientFunds(amountWon);
+      }
+    } else {
+      reporterService.printInvalidHorse(horseNumber);
+    }
   }
 
   @Override
   public void winner(int horseNumber) {
-    horseService.setRaceWinner(horseNumber);
+    if (horseService.isValidHorseNumber(horseNumber)) {
+      horseService.setRaceWinner(horseNumber);
+      reporterService.printInventory();
+      reporterService.printHorses();
+    } else {
+      reporterService.printInvalidHorse(horseNumber);
+    }
   }
 
   @Override

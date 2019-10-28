@@ -2,6 +2,7 @@ package com.artisancreek.horsetrack.service;
 
 import com.artisancreek.horsetrack.model.Horse;
 import com.artisancreek.horsetrack.model.Inventory;
+import com.artisancreek.horsetrack.model.Wager;
 import com.artisancreek.horsetrack.repository.HorseRepository;
 import com.artisancreek.horsetrack.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class ReporterService {
   private String messageInventory;
   @Value("${message.horses}")
   private String messageHorses;
+  @Value("${message.no.payout}")
+  private String messageNoPayout;
   @Value("${message.payout}")
   private String messagePayout;
   @Value("${message.dispensing}")
@@ -44,8 +47,6 @@ public class ReporterService {
   private String errorMessageInvalidCommand;
   @Value("${error.message.invalid.horse.number}")
   private String errorMessageInvalidHorseNumber;
-  @Value("${error.message.no.payout}")
-  private String errorMessageNoPayout;
 
   public void printHorses() {
 
@@ -72,6 +73,37 @@ public class ReporterService {
 
   public void printInvalidCommand(String command) {
     System.out.println(errorMessageInvalidCommand + " " + command);
+  }
+
+  public void printInvalidHorse(int horseNumber) {
+    System.out.println(errorMessageInvalidHorseNumber + " " + horseNumber);
+  }
+
+  public void printInvalidBet(String invalidBet) {
+    System.out.println(errorMessageInvalidBet + " " + invalidBet);
+  }
+
+  public void printPayout(String horseName, int amountWon) {
+    System.out.println(messagePayout + " " + horseName + "," + currencySymbol + amountWon);
+  }
+
+  public void printNoPayout(String horseName) {
+    System.out.println(messageNoPayout + " " + horseName);
+  }
+
+  public void printInsufficientFunds(int amountWon) {
+    System.out.println(errorMessageInsufficientFunds + " " + currencySymbol + amountWon);
+  }
+
+  public void printDispense(List<Wager> dispense) {
+    System.out.println(messageDispensing);
+    dispense.forEach(wager-> {
+      System.out.println(currencySymbol
+          + wager.getDenomination()
+          + ","
+          + wager.getBillCount()
+          );
+    });
   }
 
   public void printErrorMessage(String message) {

@@ -28,9 +28,28 @@ public class InventoryService {
       });
   }
 
-  public boolean sufficientFunds(Horse winningHorse) {
+  public void decrementInventory(int denomination, int amount) {
 
-    return true;
+    Inventory inventory = inventoryRepository.findByDenominationEquals(denomination);
+
+    int currentBillCount = inventory.getBillCount();
+    if ((currentBillCount - amount) > 0) {
+      inventory.setBillCount(currentBillCount - amount);
+      inventoryRepository.save(inventory);
+    }
+  }
+
+  public boolean sufficientFunds(int amountWon) {
+
+    List<Inventory> inventories = inventoryRepository.findAll();
+    Integer result = inventories.stream().reduce(0,
+        (total, inventory) -> total + (inventory.getDenomination() * inventory.getBillCount()), Integer::sum);
+    if ((result - amountWon) > 0) {
+      return true;
+    } else {
+      return false;
+    }
+
   }
 
 }

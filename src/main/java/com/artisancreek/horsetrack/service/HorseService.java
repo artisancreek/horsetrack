@@ -14,6 +14,27 @@ public class HorseService {
   @Autowired
   private HorseRepository horseRepository;
 
+  public String getHorseName(int horseNumber) {
+    Horse horse = horseRepository.findByHorseNumberEquals(horseNumber);
+
+    return horse.getHorseName();
+  }
+
+  public int getHorseOdds(int horseNumber) {
+    Horse horse = horseRepository.findByHorseNumberEquals(horseNumber);
+
+    return horse.getOdds();
+  }
+
+  public boolean isHorseWinner(int horseNumber) {
+    Horse horse = horseRepository.findByHorseNumberEquals(horseNumber);
+    if (horse.getRaceStatus() == RaceStatus.WON) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   public boolean isValidHorseNumber(int horseNumber) {
     if (horseRepository.findByHorseNumberEquals(horseNumber) == null) {
       return false;
