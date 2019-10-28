@@ -14,6 +14,14 @@ public class HorseService {
   @Autowired
   private HorseRepository horseRepository;
 
+  public boolean isValidHorseNumber(int horseNumber) {
+    if (horseRepository.findByHorseNumberEquals(horseNumber) == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   public void setRaceWinner(int horseNumber) {
 
     List<Horse> horses = horseRepository.findAll();

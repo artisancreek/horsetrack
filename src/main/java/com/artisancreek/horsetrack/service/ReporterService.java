@@ -25,10 +25,32 @@ public class ReporterService {
   @Value("${currency.symbol}")
   private String currencySymbol;
 
+  // Messages
+  @Value("${message.inventory}")
+  private String messageInventory;
+  @Value("${message.horses}")
+  private String messageHorses;
+  @Value("${message.payout}")
+  private String messagePayout;
+  @Value("${message.dispensing}")
+  private String messageDispensing;
+
+  // Error Messages
+  @Value("${error.message.insufficient.funds}")
+  private String errorMessageInsufficientFunds;
+  @Value("${error.message.invalid.bet}")
+  private String errorMessageInvalidBet;
+  @Value("${error.message.invalid.command}")
+  private String errorMessageInvalidCommand;
+  @Value("${error.message.invalid.horse.number}")
+  private String errorMessageInvalidHorseNumber;
+  @Value("${error.message.no.payout}")
+  private String errorMessageNoPayout;
+
   public void printHorses() {
 
     Iterable<Horse> horses = horseRepository.findAll();
-    System.out.println("Horses:");
+    System.out.println(messageHorses);
     horses.forEach((horse) -> {
       System.out.println(horse.getHorseNumber()
           +","+horse.getHorseName()
@@ -40,7 +62,7 @@ public class ReporterService {
   public void printInventory() {
 
     Iterable<Inventory> inventories = inventoryRepository.findAll();
-    System.out.println("Inventory:");
+    System.out.println(messageInventory);
     inventories.forEach((inventory) -> {
       System.out.println(currencySymbol
           +inventory.getDenomination()
@@ -48,6 +70,13 @@ public class ReporterService {
     });
   }
 
+  public void printInvalidCommand(String command) {
+    System.out.println(errorMessageInvalidCommand + " " + command);
+  }
+
+  public void printErrorMessage(String message) {
+    System.out.println(message);
+  }
   public void startup() {
     printInventory();
     printHorses();

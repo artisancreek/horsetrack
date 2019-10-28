@@ -52,6 +52,7 @@ public class HorsetrackApplication implements CommandLineRunner {
       // validate the input
       kioskMode.execute(commandString.nextLine());
 
+
 //      reporterService.printHorses();
 //      kioskMode.winner(3);
     }

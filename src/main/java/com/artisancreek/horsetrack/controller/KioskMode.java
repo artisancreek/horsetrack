@@ -30,8 +30,37 @@ public class KioskMode implements AccessorMode {
   @Override
   public void execute(String commandLine) {
     System.out.println("Command issued: "+commandLine);
-    restock();
-    quit = true;
+    if ((commandService.parseCommand(commandLine).equalsIgnoreCase("invalid"))) {
+      reporterService.printInvalidCommand(commandLine);
+    } else {
+      commandFactory(commandLine);
+    }
+
+  }
+
+  private void commandFactory(String commandLine) {
+    String command = commandService.parseCommand(commandLine);
+
+    switch (command) {
+      case "quit":
+        quit = true;
+        break;
+      case "restock":
+        restock();
+        break;
+      case "winner":
+        winner(commandService.getWinningHorseNumber());
+        break;
+      case "wager":
+        wager(commandService.getBetHorseNumber(), commandService.getWagerAmount());
+        break;
+      case "error":
+        reporterService.printErrorMessage(commandService.getErrorMessage());
+        break;
+      default:
+        // Do nothing
+    }
+
   }
 
   @Override
@@ -46,15 +75,13 @@ public class KioskMode implements AccessorMode {
   }
 
   @Override
-  public void wager() {
-    System.out.println("wager");
+  public void wager(int horseNumber, int wagerAmount) {
+    System.out.println("wager: "+ horseNumber + "," + wagerAmount);
   }
 
   @Override
   public void winner(int horseNumber) {
-    System.out.println("winner: " + horseNumber);
     horseService.setRaceWinner(horseNumber);
-
   }
 
   @Override

@@ -1,5 +1,6 @@
 package com.artisancreek.horsetrack.service;
 
+import com.artisancreek.horsetrack.model.Horse;
 import com.artisancreek.horsetrack.model.Inventory;
 import com.artisancreek.horsetrack.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,11 @@ public class InventoryService {
         inventory.setBillCount(restockAmount);
         inventoryRepository.save(inventory);
       });
+  }
 
+  public boolean sufficientFunds(Horse winningHorse) {
+
+    return true;
   }
 
 }
