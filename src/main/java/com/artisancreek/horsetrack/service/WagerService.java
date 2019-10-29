@@ -1,10 +1,7 @@
 package com.artisancreek.horsetrack.service;
 
-
 import com.artisancreek.horsetrack.model.Inventory;
 import com.artisancreek.horsetrack.model.Wager;
-import com.artisancreek.horsetrack.repository.HorseRepository;
-import com.artisancreek.horsetrack.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +20,6 @@ public class WagerService {
   final int HUNDRED = 100;
 
   @Autowired
-  private HorseRepository horseRepository;
-
-  @Autowired
-  private InventoryRepository inventoryRepository;
-
-  @Autowired
   private InventoryService inventoryService;
 
   public int calculateAmountWon(int wager, int odds) {
@@ -41,7 +32,10 @@ public class WagerService {
     Wager wager;
     boolean wagerAdded = false;
 
-    List<Integer> denoms = inventoryService.getInventory().stream().map(b -> b.getDenomination()).collect(Collectors.toList());
+    List<Integer> denoms = inventoryService.getInventory()
+                              .stream()
+                              .map(Inventory::getDenomination)
+                              .collect(Collectors.toList());
     Collections.reverse(denoms);
 
     List<Inventory> inventories = inventoryService.getInventory();
