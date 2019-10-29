@@ -8,6 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class WagerServiceTest {
 
   @Rule
@@ -28,4 +31,5 @@ public class WagerServiceTest {
 
     Assert.assertEquals("Winnings does not equal", expected, actual);
   }
+
 }

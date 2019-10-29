@@ -83,17 +83,17 @@ public class KioskMode implements AccessorMode {
       int amountWon = wagerService.calculateAmountWon(
                         wagerAmount,
                         horseService.getHorseOdds(horseNumber));
-      if (inventoryService.sufficientFunds(amountWon)) {
-        if (horseService.isHorseWinner(horseNumber)) {
+      if (horseService.isHorseWinner(horseNumber)) {
+        if (inventoryService.sufficientFunds(amountWon)) {
           reporterService.printPayout(horseService.getHorseName(horseNumber), amountWon);
           reporterService.printDispense(wagerService.dispenseWinnings(amountWon));
         } else {
-          reporterService.printNoPayout(horseService.getHorseName(horseNumber));
+          reporterService.printInsufficientFunds(amountWon);
         }
         reporterService.printInventory();
         reporterService.printHorses();
       } else {
-        reporterService.printInsufficientFunds(amountWon);
+        reporterService.printNoPayout(horseService.getHorseName(horseNumber));
       }
     } else {
       reporterService.printInvalidHorse(horseNumber);

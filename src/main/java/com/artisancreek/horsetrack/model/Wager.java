@@ -1,8 +1,5 @@
 package com.artisancreek.horsetrack.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 public class Wager {
 
   private int denomination;

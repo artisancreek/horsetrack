@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WagerService {
@@ -35,34 +37,37 @@ public class WagerService {
 
   public List<Wager> dispenseWinnings(int winnings) {
 
-    inventoryService.decrementInventory(HUNDRED, winnings/HUNDRED);
-    Wager hundred = new Wager(HUNDRED, winnings/HUNDRED);
-    winnings = winnings % HUNDRED;
+    List<Wager> wagerList = new ArrayList<>();
+    Wager wager;
+    boolean wagerAdded = false;
 
-    inventoryService.decrementInventory(TWENTY, winnings/TWENTY);
-    Wager twenty = new Wager(TWENTY, winnings/TWENTY);
-    winnings = winnings % TWENTY;
+    List<Integer> denoms = inventoryService.getInventory().stream().map(b -> b.getDenomination()).collect(Collectors.toList());
+    Collections.reverse(denoms);
 
-    inventoryService.decrementInventory(TEN, winnings/TEN);
-    Wager ten = new Wager(TEN, winnings/TEN);
-    winnings = winnings % TEN;
+    List<Inventory> inventories = inventoryService.getInventory();
+    for (Integer denomination : denoms) {
+      int bill = denomination;
+      wagerAdded = false;
+      for (int cnt = inventoryService.getInventory(bill).getBillCount(); cnt >0; cnt--) {
+        int totalAmountOfBills = bill * cnt;
+        if (winnings >= totalAmountOfBills) {
+          wager = new Wager(bill,cnt);
+          wagerList.add(wager);
+          wagerAdded = true;
+          winnings -= totalAmountOfBills;
+          break;
+        }
+      }
+      if (!wagerAdded) {
+        wager = new Wager(bill,0);
+        wagerList.add(wager);
+      }
+    }
 
-    inventoryService.decrementInventory(FIVE, winnings/FIVE);
-    Wager five = new Wager(FIVE, winnings/FIVE);
-    winnings = winnings % FIVE;
-
-    inventoryService.decrementInventory(ONE, winnings);
-    Wager one = new Wager(ONE, winnings);
-
-    List<Wager> denominations = new ArrayList<>();
-    denominations.add(one);
-    denominations.add(five);
-    denominations.add(ten);
-    denominations.add(twenty);
-    denominations.add(hundred);
-
-    return denominations;
-
+    wagerList.forEach(k-> {
+      inventoryService.decrementInventory(k.getDenomination(), k.getBillCount());
+    });
+    return wagerList;
   }
 
 }

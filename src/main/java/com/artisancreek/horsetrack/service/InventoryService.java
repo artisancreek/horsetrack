@@ -1,6 +1,5 @@
 package com.artisancreek.horsetrack.service;
 
-import com.artisancreek.horsetrack.model.Horse;
 import com.artisancreek.horsetrack.model.Inventory;
 import com.artisancreek.horsetrack.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ public class InventoryService {
     Inventory inventory = inventoryRepository.findByDenominationEquals(denomination);
 
     int currentBillCount = inventory.getBillCount();
-    if ((currentBillCount - amount) > 0) {
+    if ((currentBillCount - amount) >= 0) {
       inventory.setBillCount(currentBillCount - amount);
       inventoryRepository.save(inventory);
     }
@@ -44,12 +43,19 @@ public class InventoryService {
     List<Inventory> inventories = inventoryRepository.findAll();
     Integer result = inventories.stream().reduce(0,
         (total, inventory) -> total + (inventory.getDenomination() * inventory.getBillCount()), Integer::sum);
-    if ((result - amountWon) > 0) {
+    if ((result - amountWon) >= 0) {
       return true;
     } else {
       return false;
     }
+  }
 
+  public List<Inventory>  getInventory() {
+    return inventoryRepository.findAll();
+  }
+
+  public Inventory  getInventory(int denomination) {
+    return inventoryRepository.findByDenominationEquals(denomination);
   }
 
 }
