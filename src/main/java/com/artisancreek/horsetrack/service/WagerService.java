@@ -38,7 +38,6 @@ public class WagerService {
                               .collect(Collectors.toList());
     Collections.reverse(denoms);
 
-    List<Inventory> inventories = inventoryService.getInventory();
     for (Integer denomination : denoms) {
       int bill = denomination;
       wagerAdded = false;
