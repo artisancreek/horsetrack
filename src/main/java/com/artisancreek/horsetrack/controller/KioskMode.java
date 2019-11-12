@@ -79,25 +79,28 @@ public class KioskMode implements AccessorMode {
 
   @Override
   public void wager(int horseNumber, int wagerAmount) {
-    if (horseService.isValidHorseNumber(horseNumber)) {
-      int amountWon = wagerService.calculateAmountWon(
-                        wagerAmount,
-                        horseService.getHorseOdds(horseNumber));
-      if (horseService.isHorseWinner(horseNumber)) {
-        if (inventoryService.sufficientFunds(amountWon)) {
-          reporterService.printPayout(horseService.getHorseName(horseNumber), amountWon);
-          reporterService.printDispense(wagerService.dispenseWinnings(amountWon));
-        } else {
-          reporterService.printInsufficientFunds(amountWon);
-        }
-        reporterService.printInventory();
-        reporterService.printHorses();
-      } else {
-        reporterService.printNoPayout(horseService.getHorseName(horseNumber));
-      }
-    } else {
+    if (!(horseService.isValidHorseNumber(horseNumber))) {
       reporterService.printInvalidHorse(horseNumber);
+      return;
     }
+
+    if (!(horseService.isHorseWinner(horseNumber))) {
+      reporterService.printNoPayout(horseService.getHorseName(horseNumber));
+      return;
+    }
+
+    int amountWon = wagerService.calculateAmountWon(
+        wagerAmount,
+        horseService.getHorseOdds(horseNumber));
+    if (inventoryService.sufficientFunds(amountWon)) {
+      reporterService.printPayout(horseService.getHorseName(horseNumber), amountWon);
+      reporterService.printDispense(wagerService.dispenseWinnings(amountWon));
+    } else {
+      reporterService.printInsufficientFunds(amountWon);
+    }
+
+    reporterService.printInventory();
+    reporterService.printHorses();
   }
 
   @Override
