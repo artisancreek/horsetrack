@@ -2,8 +2,8 @@ package com.artisancreek.horsetrack.model;
 
 public class Wager {
 
-  private int denomination;
-  private int billCount;
+  private final int denomination;
+  private final int billCount;
 
   public Wager(int denomination, int billCount) {
     this.denomination = denomination;
@@ -14,16 +14,8 @@ public class Wager {
     return denomination;
   }
 
-  public void setDenomination(int denomination) {
-    this.denomination = denomination;
-  }
-
   public int getBillCount() {
     return billCount;
-  }
-
-  public void setBillCount(int billCount) {
-    this.billCount = billCount;
   }
 
   @Override
