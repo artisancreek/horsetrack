@@ -1,0 +1,216 @@
+@startuml
+
+left header
+**HorseTrack Class Diagram**
+endheader
+
+interface AccessorMode {
+  boolean quit()
+  void restock()
+  void wager(int horseNumber, int wagerAmount)
+  void winner(int horse)
+  void printStartupMessages()
+  void initialize()
+  void execute(String commandLine)
+}
+
+class KioskMode
+
+AccessorMode <|-- KioskMode
+
+class Horse
+class Inventory
+class Wager
+
+interface HorseRepository {
+  List<Horse> findAll()
+  Horse findByHorseNumberEquals(int horseNumber)
+}
+interface InventoryRepository {
+  List<Inventory> findAll()
+  Inventory findByDenominationEquals(int denomination)
+}
+
+class CommandService {
+CommandService()
+void execute(String[] command)
+String parseCommand(String commandLine)
+String getCurrentCommand()
+int getBetHorseNumber()
+String getErrorMessage()
+int getWagerAmount()
+int getWinningHorseNumber()
+}
+class ConfigService {
+ConfigService()
+void loadHorses()
+void loadInventory()
+void startup()
+}
+class HorseService {
+String getHorseName(int horseNumber)
+int getHorseOdds(int horseNumber)
+boolean isHorseWinner(int horseNumber)
+boolean isValidHorseNumber(int horseNumber)
+void setRaceWinner(int horseNumber)
+}
+class InventoryService {
+void restock()
+void decrementInventory(int denomination, int amount)
+boolean sufficientFunds(int amountWon)
+List<Inventory> getInventory()
+Inventory getInventory(int denomination)
+}
+class ReporterService {
+void printHorses()
+void printInventory()
+void printInvalidCommand(String command)
+void printInvalidHorse(int horseNumber)
+void printInvalidBet(String invalidBet)
+void printPayout(String horseName, int amountWon)
+void printNoPayout(String horseName)
+void printInsufficientFunds(int amountWon)
+void printDispense(List<Wager> dispense)
+void printErrorMessage(String message)
+void startup()
+}
+class WagerService {
+int calculateAmountWon(int wager, int odds)
+List<Wager> dispenseWinnings(int winnings)}
+
+enum RaceStatus {
+WON
+LOST
+}
+
+@enduml
+
+@startuml
+
+left header
+**HorseTrack Startup Sequence Diagram**
+endheader
+
+actor User
+boundary main
+entity ConfigService
+User -> main : startup
+main -> ConfigService : startup
+ConfigService -> ConfigService : loadHorses
+ConfigService -> ConfigService : loadInventory
+ConfigService -> ConfigService : setWinner : default 1
+ConfigService -> main : ready response
+
+@enduml
+
+@startuml
+
+left header
+**HorseTrack Sufficient Funds Sequence Diagram**
+endheader
+
+actor User
+entity KioskMode
+entity CommandService
+entity InventoryService
+entity ReporterService
+
+User -> KioskMode : place bet
+KioskMode -> CommandService : parse command
+CommandService -> CommandService : validate
+CommandService -> KioskMode : parsed command
+KioskMode -> KioskMode : commandFactory
+KioskMode -> InventoryService : sufficient funds
+InventoryService -> KioskMode : boolean
+KioskMode -> ReporterService : insufficient funds
+ReporterService -> User : message: insufficient funds
+
+@enduml
+
+@startuml
+
+left header
+**HorseTrack Dispense Winnings Sequence Diagram**
+endheader
+
+actor User
+entity KioskMode
+entity HorseService
+collections HorseRepository
+entity WagerService
+entity InventoryService
+collections InventoryRepository
+entity ReporterService
+
+User -> KioskMode : place bet
+KioskMode -> HorseService : isValidHorseNumber
+HorseService -> HorseRepository : findByHorseNumberEquals
+HorseRepository -> HorseService : Horse
+HorseService -> KioskMode : false
+KioskMode -> ReporterService : printInvalidHorse
+KioskMode -> User : exit
+
+HorseService -> KioskMode : true
+KioskMode -> HorseService : isHorseWinner
+HorseService -> HorseRepository : findByHorseNumberEquals
+HorseRepository -> HorseService : Horse
+HorseService -> KioskMode : false
+KioskMode -> ReporterService : printNoPayout
+KioskMode -> User : exit
+
+HorseService -> KioskMode : true
+KioskMode -> HorseService : getHorseOdds
+HorseService -> HorseRepository : findByHorseNumberEquals
+HorseRepository -> HorseService : Horse
+HorseService -> KioskMode : Odds
+KioskMode -> WagerService : calculateAmountWon
+WagerService -> KioskMode : AmountWon
+KioskMode -> InventoryService : sufficientFunds
+InventoryService -> InventoryRepository : findAll
+InventoryRepository -> InventoryService :List<Horse>
+InventoryService -> KioskMode : false
+KioskMode -> ReporterService : printInsufficientFunds
+InventoryService -> KioskMode : true
+KioskMode -> HorseService : getHorseName
+KioskMode -> ReporterService : printPayout
+KioskMode -> WagerService : dispenseWinnings
+KioskMode -> ReporterService : printDispense
+
+KioskMode -> ReporterService : printInventory
+KioskMode -> ReporterService : printHorses
+KioskMode -> User : exit
+
+@enduml
+
+@startuml
+
+left header
+**HorseTrack WagerService Detail Dispense Winnings Sequence Diagram**
+endheader
+
+actor KioskMode
+entity WagerService
+entity InventoryService
+collections InventoryRepository
+
+KioskMode -> WagerService : dispenseWinnings
+WagerService -> InventoryService : getInventory
+InventoryService -> InventoryRepository : findAll
+InventoryRepository -> InventoryService : List<Inventory>
+InventoryService -> WagerService : List<Integer>
+
+WagerService -> InventoryService : getInventory
+InventoryService -> InventoryRepository : findByDenominationEquals
+InventoryRepository -> InventoryService : Inventory
+InventoryService -> WagerService : Inventory
+WagerService -> WagerService : totalAmountOfBills
+
+WagerService -> InventoryService : decrementInventory
+InventoryService -> InventoryRepository : findByDenominationEquals
+InventoryRepository -> InventoryService : Inventory
+InventoryService -> InventoryRepository : save
+InventoryService -> WagerService : List<Wager>
+
+WagerService -> KioskMode : exit
+
+@enduml
